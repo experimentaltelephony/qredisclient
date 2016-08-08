@@ -17,7 +17,6 @@ class ConnectionConfig
 {
 public:
     static const uint DEFAULT_REDIS_PORT = 6379;
-    static const uint DEFAULT_SSH_PORT = 22;
     static const uint DEFAULT_TIMEOUT_IN_MS = 60000;
 
 public:
@@ -58,7 +57,6 @@ public:
 
     /*
      * SSL settings
-     * NOTE: SSL over SSH tunnel is not supported!
      */
     bool useSsl() const;
     void setSsl(bool enabled);
@@ -73,41 +71,6 @@ public:
     void setSslSettigns(QString sslCaCertPath,
                         QString sslPrivateKeyPath = "",
                         QString sslLocalCertPath = "");
-
-    /*
-     * SSH Tunnel settings
-     */
-    bool useSshTunnel() const;
-    bool isSshPasswordUsed() const;
-    QString sshPassword() const;
-    QString sshUser() const;
-    QString sshHost() const;
-    uint sshPort() const;
-
-    /**
-     * @brief getSshPrivateKey from specified path
-     * @return QString with ssh key
-     */
-    QString getSshPrivateKey() const;
-    QString getSshPrivateKeyPath() const;
-
-    void setSshPassword(QString pass);
-    void setSshHost(QString host);
-    void setSshPrivateKeyPath(QString path);
-    void setSshUser(QString user);
-    void setSshPort(uint port);
-
-    /**
-     * @brief setSshTunnelSettings - Set SSH settings
-     * @param host
-     * @param user
-     * @param pass
-     * @param port
-     * @param sshPrivatekeyPath
-     */
-    void setSshTunnelSettings(QString host, QString user, QString pass,
-                              uint port = DEFAULT_SSH_PORT,
-                              QString sshPrivatekeyPath = "");
 
     /*
      * Convert config to JSON

@@ -8,7 +8,6 @@ RedisClient::ConnectionConfig::ConnectionConfig(const QString &host, const QStri
     m_parameters.insert("auth", auth);
     m_parameters.insert("host", host);
     m_parameters.insert("port", port);
-    m_parameters.insert("ssh_port", DEFAULT_SSH_PORT);
     m_parameters.insert("timeout_connect", DEFAULT_TIMEOUT_IN_MS);
     m_parameters.insert("timeout_execute", DEFAULT_TIMEOUT_IN_MS);
 }
@@ -141,58 +140,16 @@ void RedisClient::ConnectionConfig::setSslSettigns(QString sslCaCertPath, QStrin
     setParam<QString>("ssl_local_cert_path", sslLocalCertPath);
 }
 
-bool RedisClient::ConnectionConfig::isSshPasswordUsed() const
-{
-    return !param<QString>("ssh_password").isEmpty();
-}
-
-QString RedisClient::ConnectionConfig::sshPassword() const
-{
-    return param<QString>("ssh_password");
-}
-
-QString RedisClient::ConnectionConfig::sshUser() const
-{
-    return param<QString>("ssh_user");
-}
-
-QString RedisClient::ConnectionConfig::sshHost() const
-{
-    return param<QString>("ssh_host");
-}
-
-uint RedisClient::ConnectionConfig::sshPort() const
-{
-    return param<uint>("ssh_port");
-}
 
 QVariantHash RedisClient::ConnectionConfig::getInternalParameters() const
 {
     return m_parameters;
 }
 
-void RedisClient::ConnectionConfig::setSshTunnelSettings(QString host, QString user, QString pass, uint port, QString sshPrivatekeyPath)
-{
-    m_parameters.insert("ssh_host", host);
-    m_parameters.insert("ssh_user", user);
-    m_parameters.insert("ssh_password", pass);
-    m_parameters.insert("ssh_port", port);
-    m_parameters.insert("ssh_private_key_path", sshPrivatekeyPath);
-}
-
 bool RedisClient::ConnectionConfig::isNull() const
 {
     return param<QString>("host").isEmpty()
             || param<uint>("port") <= 0;
-}
-
-bool RedisClient::ConnectionConfig::useSshTunnel() const
-{
-    return !param<QString>("ssh_host").isEmpty()
-            && param<int>("ssh_port") > 0
-            && !param<QString>("ssh_user").isEmpty()
-            && (!param<QString>("ssh_password").isEmpty()
-                || !param<QString>("ssh_private_key_path").isEmpty());
 }
 
 bool RedisClient::ConnectionConfig::useAuth() const
@@ -225,41 +182,6 @@ void RedisClient::ConnectionConfig::setOwner(QWeakPointer<RedisClient::Connectio
 QWeakPointer<RedisClient::Connection> RedisClient::ConnectionConfig::getOwner() const
 {
     return m_owner;
-}
-
-QString RedisClient::ConnectionConfig::getSshPrivateKey() const
-{
-    return getValidPathFromParameter("ssh_private_key_path");
-}
-
-QString RedisClient::ConnectionConfig::getSshPrivateKeyPath() const
-{
-    return param<QString>("ssh_private_key_path");
-}
-
-void RedisClient::ConnectionConfig::setSshPassword(QString pass)
-{
-    m_parameters.insert("ssh_password", pass);
-}
-
-void RedisClient::ConnectionConfig::setSshHost(QString host)
-{
-    m_parameters.insert("ssh_host", host);
-}
-
-void RedisClient::ConnectionConfig::setSshPrivateKeyPath(QString path)
-{
-    m_parameters.insert("ssh_private_key_path", path);
-}
-
-void RedisClient::ConnectionConfig::setSshUser(QString user)
-{
-    m_parameters.insert("ssh_user", user);
-}
-
-void RedisClient::ConnectionConfig::setSshPort(uint port)
-{
-    m_parameters.insert("ssh_port", port);
 }
 
 RedisClient::ConnectionConfig RedisClient::ConnectionConfig::fromJsonObject(const QJsonObject &config)

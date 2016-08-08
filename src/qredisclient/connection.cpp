@@ -5,7 +5,6 @@
 #include "command.h"
 #include "scancommand.h"
 #include "transporters/defaulttransporter.h"
-#include "transporters/sshtransporter.h"
 #include "scanresponse.h"
 #include "utils/sync.h"
 #include "utils/compat.h"
@@ -265,12 +264,7 @@ void RedisClient::Connection::getDatabaseKeys(std::function<void (const RedisCli
 
 void RedisClient::Connection::createTransporter()
 {
-    //todo : implement unix socket transporter
-    if (m_config.useSshTunnel()) {
-       m_transporter = QSharedPointer<AbstractTransporter>(new SshTransporter(this));
-    } else {
-       m_transporter = QSharedPointer<AbstractTransporter>(new DefaultTransporter(this));
-    }
+    m_transporter = QSharedPointer<AbstractTransporter>(new DefaultTransporter(this));
 }
 
 bool RedisClient::Connection::isTransporterRunning()
